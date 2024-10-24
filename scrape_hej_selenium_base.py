@@ -1,8 +1,6 @@
 # Script to scrape Counselor Education jobs from HigherEdJobs
 # Emilio Lehoucq
 
-# TODO: figure out how long a job can run on GitHub Actions and whether that'll be a problem
-
 ##################################### Importing libraries #####################################
 import logging
 from seleniumbase import Driver
@@ -10,7 +8,7 @@ from selenium.webdriver.common.by import By
 from time import sleep
 from random import uniform
 import numpy as np
-from datetime import datetime
+from datetime import datetime, timedelta
 from text_extractor import extract_text
 import os
 from googleapiclient.discovery import build
@@ -19,6 +17,14 @@ from googleapiclient.http import MediaFileUpload
 import json
 
 ##################################### Setting parameters #####################################
+
+# Capture the start time
+START_TIME = datetime.now()
+
+# The maximum allowed duration
+# A job can run maximum for 6 hours on GitHub Actions https://docs.github.com/en/actions/administering-github-actions/usage-limits-billing-and-administration
+# I want to leave enough time to upload the data collected to Google Sheets and Drive and finish the job
+MAX_DURATION = timedelta(hours=5, minutes=0)
 
 # URL to scrape
 URL_COUNSELOR_EDUCATION_JOBS = "https://www.higheredjobs.com/faculty/search.cfm?JobCat=62"
@@ -260,8 +266,16 @@ data_all_job_postings = []
 
 logger.info("Will scrape the job postings.")
 # Iterate over the URLs to job postings
-for url_job_posting in urls_job_postings[:1]: # TODO: change to all the URLs
+for url_job_posting in urls_job_postings:
     logger.info(f"Will scrape {url_job_posting}.")
+
+    # Get current time
+    current_time = datetime.now()
+
+    # Check if the maximum duration has been reached
+    if current_time - START_TIME > MAX_DURATION:
+        logger.info("Maximum duration reached. Breaking the loop to scrape job postings.")
+        break
 
     # Extract the job code from the URL
     job_code = extract_job_code(url_job_posting)
@@ -327,7 +341,7 @@ for url_job_posting in urls_job_postings[:1]: # TODO: change to all the URLs
     sleep(uniform(MIN_SLEEP_TIME, MAX_SLEEP_TIME))
     logger.info("Slept for a bit.")
 
-logger.info("Scraped all the job postings.")
+logger.info("Scraped all the job postings (or broke the loop if maximum duration reached).")
 
 ##################################### Quit driver #####################################
 
