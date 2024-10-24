@@ -37,13 +37,13 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 logger.info(f"Logging configured. Current timestamp: {TS}")
 
-# TODO: comment for GitHub Actions
-# Add a FileHandler to log to a file in the current working directory
-file_handler = logging.FileHandler('scrape_hej.log')
-file_handler.setLevel(logging.INFO)
-formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
-file_handler.setFormatter(formatter)
-logger.addHandler(file_handler)
+# # TODO: comment for GitHub Actions
+# # Add a FileHandler to log to a file in the current working directory
+# file_handler = logging.FileHandler('scrape_hej.log')
+# file_handler.setLevel(logging.INFO)
+# formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
+# file_handler.setFormatter(formatter)
+# logger.addHandler(file_handler)
 
 ##################################### Define functions for this script #####################################
 
@@ -154,7 +154,7 @@ logger.info("Functions defined.")
 
 # LOCAL MACHINE -- Set the environment variable for the service account credentials 
 #TODO: comment for GH Actions
-os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "credentials.json"
+# os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "credentials.json"
 
 # Iterate over the number of retries
 logger.info("Re-try block for Google Sheets about to start.")
@@ -165,10 +165,10 @@ for attempt in range(RETRIES):
         # Authenticate using the service account
         # LOCAL MACHINE
         #TODO: comment for GH Actions
-        credentials = service_account.Credentials.from_service_account_file(os.getenv('GOOGLE_APPLICATION_CREDENTIALS'))
+        # credentials = service_account.Credentials.from_service_account_file(os.getenv('GOOGLE_APPLICATION_CREDENTIALS'))
         # GITHUB ACTIONS
         # TODO: uncomment for GH Actions
-        # credentials = service_account.Credentials.from_service_account_info(json.loads(os.getenv('GOOGLE_APPLICATION_CREDENTIALS')))
+        credentials = service_account.Credentials.from_service_account_info(json.loads(os.getenv('GOOGLE_APPLICATION_CREDENTIALS')))
         logger.info("Authenticated with Google Sheets")
 
         # Create service
@@ -208,8 +208,8 @@ for attempt in range(RETRIES):
 
 ##################################### Initialize the driver #####################################
 
-driver = Driver(uc=True)
-# driver = Driver(uc=True, headless=True) # TODO: uncomment for GitHub Actions
+# driver = Driver(uc=True)
+driver = Driver(uc=True, headless=True) # TODO: uncomment for GitHub Actions
 logger.info("Driver initialized.")
 
 ##################################### Scrape all the counselor education jobs #####################################
