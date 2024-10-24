@@ -20,5 +20,7 @@ jobs:
       run: pip install -r requirements_scrape_hej_selenium_base.txt
 
     - name: Run script
+      env:
+        GOOGLE_APPLICATION_CREDENTIALS: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
       run: |
         python scrape_hej_selenium_base.py
