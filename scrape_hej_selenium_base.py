@@ -296,6 +296,10 @@ for url_job_posting in urls_job_postings:
     data_given_job_posting.append(job_code)
     logger.info("Job code appended to the list.")
 
+    # Append current timestamp to the list
+    data_given_job_posting.append(datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+    logger.info("Current timestamp appended to the list.")
+
     try:
 
         # Go to the URL
@@ -359,12 +363,12 @@ for attempt in range(RETRIES):
         logger.info(f"Re-try block for data for postings (Google Sheets). Attempt {attempt + 1}.")
 
         # Range to write the data
-        range_sheet="A"+str(n_postings+1)+":A10000000"
+        range_sheet="A"+str(n_postings+1)+":B10000000"
         logger.info("Prepared range to write the data for the postings.")
 
         # Body of the request
         # The first element is the job code
-        body={"values": [[element[0]] for element in data_all_job_postings]}
+        body={"values": [element[:2] for element in data_all_job_postings]} # job code in column A and timestamp in column B
         logger.info("Prepared body of the request for the postings.")
 
         # Execute the request
