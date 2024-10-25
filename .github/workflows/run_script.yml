@@ -1,6 +1,8 @@
 name: Run Script
 
 on:
+  schedule:
+    - cron: '0 15 */2 * *' # 3pm UTC / 10am CST
   workflow_dispatch:
 
 jobs:
